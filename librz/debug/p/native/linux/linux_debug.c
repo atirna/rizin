@@ -254,7 +254,7 @@ RzDebugReasonType linux_ptrace_event(RzDebug *dbg, int ptid, int status, bool do
 			}
 		}
 		RZ_LOG_WARN("(%d) Created process %d\n", ptid, (int)data);
-		if (!dbg->trace_forks) {
+		if (!dbg->trace_forks && !dbg->follow_child) {
 			// We need to do this even if the new process will be detached since the
 			// breakpoints are inherited from the parent
 			linux_remove_fork_bps(dbg);
