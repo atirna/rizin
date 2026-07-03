@@ -165,6 +165,13 @@ RZ_IPI RZ_OWN char *c6x_format(const C6xArchDesc *desc, const C6xInsn *insn, ut6
 /** Fill an RzAnalysisOp from a decoded instruction (type, jump/fail, ...). */
 RZ_IPI void c6x_fill_analysis(const C6xArchDesc *desc, const C6xInsn *insn, ut64 addr, RZ_OUT RzAnalysisOp *op);
 
+/** RzIL configuration (register bindings, PC/memory widths) for the C6000 VM. */
+RZ_IPI RzAnalysisILConfig *tms320_c6x_il_config(RZ_NONNULL RzAnalysis *analysis);
+
+/** Lift a decoded instruction to RzIL, or NULL when the form is not yet lifted.
+ *  \p pc is the instruction address (for PC-relative results). */
+RZ_IPI RZ_OWN RzILOpEffect *c6x_lift(const C6xInsn *insn, ut64 pc);
+
 #ifdef __cplusplus
 }
 #endif

@@ -373,3 +373,44 @@ sp = 0x100
 a = 0x0000000002
 EOF
 RUN
+
+NAME=C674x RzIL VM: register, address arithmetic, saturation, rotate, pack and memory execute
+FILE=malloc://0x100
+CMDS=<<EOF
+e asm.arch=tms320
+e analysis.cpu=c674x
+e cfg.bigendian=false
+wx 2880000028028000403c0001c03c80017802040270278002180d040358238003
+aezi
+aezs 8
+ar a0
+ar a1
+ar a2
+ar a3
+ar a4
+ar a5
+ar a6
+ar a7
+wx 28200000a81080003402800014028002280008017422000164220003
+aezi
+aezs 7
+ar a5
+ar a6
+p8 1 @ 0x40
+p8 4 @ 0x44
+EOF
+EXPECT=<<EOF
+a0 = 0x00000100
+a1 = 0x00000004
+a2 = 0x00000110
+a3 = 0x000000f0
+a4 = 0x00000104
+a5 = 0x00001000
+a6 = 0x00000004
+a7 = 0x00000001
+a5 = 0x00000021
+a6 = 0x00001000
+21
+00100000
+EOF
+RUN

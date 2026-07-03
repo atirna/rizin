@@ -30,6 +30,9 @@ int tms320_analysis_op(RzAnalysis *analysis, RzAnalysisOp *op, ut64 addr, const 
 		}
 		c6x_fill_analysis(c6x, &insn, addr, op);
 		c6x_mark_parallel(&insn, addr, &context->c6x_prev_end, &context->c6x_prev_par);
+		if (mask & RZ_ANALYSIS_OP_MASK_IL) {
+			op->il_op = c6x_lift(&insn, addr);
+		}
 		if (mask & RZ_ANALYSIS_OP_MASK_DISASM) {
 			op->mnemonic = c6x_format(c6x, &insn, addr);
 		}
@@ -476,10 +479,13 @@ static RzList /*<RzSearchKeyword *>*/ *tms320_analysis_preludes(RzAnalysis *anal
 }
 
 static RzAnalysisILConfig *tms320_il_config(RzAnalysis *analysis) {
-	// IL is provided for the C55x/C55x+ integer core and the C54x core; other
-	// CPUs (c64x, plain byte-mode) have no IL yet, so return NULL to leave the
-	// VM unconfigured.
+	// IL is provided for the C6000 (c6x) scalar core, the C55x/C55x+ integer
+	// core and the C54x core; other CPUs (plain byte-mode) have no IL yet, so
+	// return NULL to leave the VM unconfigured.
 	const char *cpu = rz_analysis_get_cpu(analysis);
+	if (c6x_desc_from_cpu(cpu)) {
+		return tms320_c6x_il_config(analysis);
+	}
 	if (cpu && (rz_str_casecmp(cpu, "c55x+") == 0 || rz_str_casecmp(cpu, "c55x") == 0)) {
 		return tms320_c55x_plus_il_config(analysis);
 	}
