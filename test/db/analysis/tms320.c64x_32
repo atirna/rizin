@@ -1,8 +1,8 @@
-NAME=320c64 OPEX
+NAME=320c64 OPEX (capstone)
 FILE=malloc://512280
 CMDS=<<EOF
 e asm.arch=tms320
-e asm.cpu=c64x
+e asm.cpu=c64x-capstone
 e cfg.bigendian=true
 wx 0041bd10
 aoj~{}
@@ -43,11 +43,11 @@ EXPECT=<<EOF
 EOF
 RUN
 
-NAME=320c64 pseudo
+NAME=320c64 pseudo (capstone)
 FILE=bins/elf/ld-2.27.so
 CMDS=<<EOF
 e asm.arch=tms320
-e asm.cpu=c64x
+e asm.cpu=c64x-capstone
 e cfg.bigendian=true
 e asm.pseudo=true
 pi 0x100~=
@@ -218,10 +218,13 @@ arp
 EOF
 EXPECT=<<EOF
 =PC	pce1
+=SP	b15
+=BP	a15
+=SR	csr
 =A0	a4
 =A1	b4
 =A2	a6
-=A3	a6
+=A3	b6
 =A4	a8
 =A5	b8
 =A6	a10
