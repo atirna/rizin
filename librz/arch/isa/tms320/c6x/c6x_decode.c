@@ -1880,3 +1880,61 @@ RZ_IPI bool c6x_decode(const C6xArchDesc *desc, const ut8 *buf, int len, ut64 pc
 	}
 	return true;
 }
+
+static int c6x_mnem_cmp(const void *a, const void *b, RZ_UNUSED void *user) {
+	return strcmp((const char *)a, (const char *)b);
+}
+
+RZ_IPI RZ_OWN RzPVector /*<const char *>*/ *c6x_mnemonics(void) {
+	RzPVector *v = rz_pvector_new(NULL);
+	if (!v) {
+		return NULL;
+	}
+	// Each functional-unit table stores its printed mnemonic in a `mnem`
+	// field; gather them all, then add the few the decoder emits directly
+	// (loads, stores, moves, branches, the address-arithmetic forms and the
+	// nop/idle family). Sorting and dropping duplicates leaves `rz-asm -e`
+	// with one clean, stable entry per opcode. The strings are borrowed from
+	// static storage, so the pvector owns no elements.
+#define C6X_MNEMS(tbl) \
+	do { \
+		for (size_t i = 0; i < RZ_ARRAY_SIZE(tbl); i++) { \
+			if ((tbl)[i].mnem) { \
+				rz_pvector_push(v, (void *)(tbl)[i].mnem); \
+			} \
+		} \
+	} while (0)
+	C6X_MNEMS(c6x_l_rows);
+	C6X_MNEMS(c6x_s_fp_rows);
+	C6X_MNEMS(c6x_d_ext_rows);
+	C6X_MNEMS(c6x_s_rows);
+	C6X_MNEMS(c6x_m_rows);
+	C6X_MNEMS(c6x_m_ext_rows);
+	C6X_MNEMS(c6x_m_unary_rows);
+	C6X_MNEMS(c6x_m_cplx_rows);
+	C6X_MNEMS(c6x_m_wide_rows);
+	C6X_MNEMS(c6x_s_ext_rows);
+	C6X_MNEMS(c6x_l_unary_rows);
+	C6X_MNEMS(c6x_d_rows);
+	C6X_MNEMS(c6x_dext_rows);
+	C6X_MNEMS(c6x_mem_rows);
+#undef C6X_MNEMS
+	static const char *synthesized[] = {
+		"add", "addaw", "addk", "addkpc", "b", "bdec", "bnop", "bpos",
+		"callp", "cmpeq", "idle", "lddw", "ldndw", "ldnw", "ldw", "mv",
+		"mvc", "mvk", "mvkh", "neg", "nop", "not", "sadd", "sshl",
+		"ssub", "stdw", "stndw", "stnw", "stw", "sub", "xor", "zero"
+	};
+	for (size_t i = 0; i < RZ_ARRAY_SIZE(synthesized); i++) {
+		rz_pvector_push(v, (void *)synthesized[i]);
+	}
+	rz_pvector_sort(v, c6x_mnem_cmp, NULL);
+	for (size_t i = 1; i < rz_pvector_len(v);) {
+		if (!strcmp((const char *)rz_pvector_at(v, i - 1), (const char *)rz_pvector_at(v, i))) {
+			rz_pvector_remove_at(v, i);
+		} else {
+			i++;
+		}
+	}
+	return v;
+}

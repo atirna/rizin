@@ -172,6 +172,11 @@ RZ_IPI RzAnalysisILConfig *tms320_c6x_il_config(RZ_NONNULL RzAnalysis *analysis)
  *  \p pc is the instruction address (for PC-relative results). */
 RZ_IPI RZ_OWN RzILOpEffect *c6x_lift(const C6xInsn *insn, ut64 pc);
 
+/** Every mnemonic the decoder can print, sorted and de-duplicated, for the
+ *  `rz-asm -e` listing. Elements are borrowed static strings; free the vector
+ *  only. */
+RZ_IPI RZ_OWN RzPVector /*<const char *>*/ *c6x_mnemonics(void);
+
 #ifdef __cplusplus
 }
 #endif
