@@ -3869,6 +3869,10 @@ RZ_API int rz_core_config_init(RzCore *core) {
 	SETB("flirt.sigdb.load.extra", true, "Load signatures from the extra path");
 	SETB("flirt.sigdb.load.home", true, "Load signatures from the home path");
 
+	/* Inquiry. All of these are experimental and not stored in projects. */
+	rz_config_add_bool(cfg, "inquiry.comment", "Experimental: Write comments at each address describing the state during abstract interpretation for debugging", false);
+	rz_config_add_set(cfg, "inquiry.trace", "Print information during analysis for debugging (options: ilblock, evalblock, bounds. Set log.level=2)", NULL);
+
 	return true;
 }
 
