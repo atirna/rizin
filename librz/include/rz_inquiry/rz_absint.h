@@ -211,13 +211,13 @@ typedef enum rz_absint_result_dimen_t {
 struct rz_absint_run_context_t {
 	RzAbsIntInstance *inst; //< parent interpreter thread
 
-	RzList /*<RzAbsIntBlock>*/ *queue; ///< States that have to be interpreted still. If this is empty, a fixpoint has been reached.
+	RzList /*<RzAbsIntBlock *>*/ *queue; ///< States that have to be interpreted still. If this is empty, a fixpoint has been reached.
 	/**
 	 * \brief All currently discovered blocks by address.
 	 * TODO: If the interval tree concept is kept, this should eventually be refactored to use RBTree directly and embed RBNode
 	 * inside RzAbsIntBlock to remove the additional indirection.
 	 */
-	RzIntervalTree /*<RzAbsIntBlock>*/ blocks;
+	RzIntervalTree /* RzAbsIntBlock */ blocks;
 	RzAbsIntResultDimen res_dimen;
 	RzAbsIntResult *res; ///< If not NULL, a fixpoint has been reached already and we are now collecting results
 
@@ -231,7 +231,7 @@ struct rz_absint_run_context_t {
 
 struct rz_absint_result_t {
 	ut64 entry; ///< always filled
-	RzIntervalTree /*<RzAbsIntBlock>*/ blocks; ///< always filled
+	RzIntervalTree /* RzAbsIntBlock */ blocks; ///< always filled
 	RzVector /*<RzAnalysisXRef>*/ xrefs; ///< filled if RZ_ABSINT_RESULT_DIMEN_XREFS is requested
 	HtUP /*<char *>*/ *comments; ///< filled if RZ_ABSINT_RESULT_DIMEN_COMMENTS
 } /*RzAbsIntResult*/;

@@ -1074,7 +1074,6 @@ static EvalResult eval_effect(RzAbsIntRunContext *ctx, const RzILOpEffect *effec
 		} \
 	} while (0);
 #define EVAL_PURE_OR_RETURN(op) EVAL_PURE_OR_RETURN_CLEANUP(op, eval_out, )
-	ut64 pc = ctx->astate->pc;
 	RzAbsIntVal *eval_out = NULL;
 	EvalResult res = EVAL_RESULT_OK;
 
@@ -1131,13 +1130,12 @@ static EvalResult eval_effect(RzAbsIntRunContext *ctx, const RzILOpEffect *effec
 		rz_bv_init(&eval_out_bv, 64);
 		bool is_const = val_domain(ctx->inst)->to_concrete_const(eval_out, &eval_out_bv);
 		if (!is_const) {
-			RZ_LOG_DEBUG("PC is going to be set to an abstract value! Current PC = 0x%" PFMT64x "\n", pc);
+			RZ_LOG_DEBUG("PC is going to be set to an abstract value! Current PC = 0x%" PFMT64x "\n", ctx->astate->pc);
 		}
 		bool is_call = ctx->block_stores_ret_addr;
 
 		if (is_const) {
-			ut64 target = rz_bv_to_ut64(&eval_out_bv);
-			RZ_LOG_DEBUG("prototype: JMP - Set PC: 0x%" PFMT64x " -> 0x%" PFMT64x "\n", pc, target);
+			RZ_LOG_DEBUG("prototype: JMP - Set PC: 0x%" PFMT64x " -> 0x%" PFMT64x "\n", ctx->astate->pc, rz_bv_to_ut64(&eval_out_bv));
 			RzAnalysisXRefType xref_type = RZ_ANALYSIS_XREF_TYPE_CODE;
 			if (is_call) {
 				xref_type = RZ_ANALYSIS_XREF_TYPE_CALL;

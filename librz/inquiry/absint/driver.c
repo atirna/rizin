@@ -54,7 +54,7 @@ typedef struct interp_driver_message_t {
 #define DRIVER_MAIN_CH_SIZE 16 ///< TODO: optimize this to be small but blocking any interpreters under practical circumstances
 
 typedef struct interp_driver_t {
-	RzThreadQueue /*<ut64>*/ *entry_points_ch; ///< Main delivers entry points to multiple interpreters with this. TODO: linked list is not optimal, but rbuf may lead to starvation
+	RzThreadQueue /* ut64 */ *entry_points_ch; ///< Main delivers entry points to multiple interpreters with this. TODO: linked list is not optimal, but rbuf may lead to starvation
 	RzThreadRingBuf *main_ch; ///< Channel to main. Multiple interpreters send info requests and analysis results with this.
 	RzAbsIntResultDimen dimens;
 	RzAbsIntTraceOptions trace_opts;

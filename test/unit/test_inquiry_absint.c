@@ -87,7 +87,7 @@ static ut64 block_end(RzAbsIntBlock *block) {
 #define EXTRACT_RESULT(code, res, blocks_count) \
 	mu_assert_eq(code, RZ_ABSINT_RESULT_OK, "result code"); \
 	mu_assert_notnull(res, "result"); \
-	RzAbsIntBlock *blocks[blocks_count]; \
+	RzAbsIntBlock *blocks[blocks_count] = { 0 }; \
 	mu_assert_eq(do_extract_blocks(res, blocks, blocks_count), blocks_count, "blocks count")
 
 #define ASSERT_BLOCK(i, start, end, is_fallthrough, jump) \
