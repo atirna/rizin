@@ -170,7 +170,7 @@ typedef enum rz_absint_lift_block_result_t {
 } RzAbsIntLiftBlockResult;
 
 typedef struct rz_absint_config_t {
-	RzAbsIntValueDomain *val_domain;
+	const RzAbsIntValueDomain *val_domain;
 	RzAbsIntTraceOptions trace_opts;
 
 	void *cb_user;
@@ -246,7 +246,11 @@ RZ_API RzAbsIntResultCode rz_absint_run(RzAbsIntInstance *inst, ut64 entry_point
 RZ_API void rz_absint_result_free(RzAbsIntInstance *inst, RzAbsIntResult *res);
 RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, RZ_NONNULL RzAnalysis *analysis, RZ_NULLABLE const char *fcn_name);
 
-extern RZ_API RzAbsIntValueDomain rz_absint_value_domain_const;
+typedef enum rz_absint_builtin_value_domain_t {
+	RZ_ABSINT_VALUE_DOMAIN_CONST
+} RzAbsIntBuiltinValueDomain;
+
+RZ_API RZ_NULLABLE const RzAbsIntValueDomain *rz_absint_builtin_value_domain(RzAbsIntBuiltinValueDomain dom);
 
 typedef struct rz_absint_driver_config_t {
 	RZ_NONNULL RzAnalysis *analysis;

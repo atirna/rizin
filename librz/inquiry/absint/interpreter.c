@@ -18,7 +18,7 @@ typedef enum {
 	EVAL_RESULT_BREAK
 } EvalResult;
 
-static RzAbsIntValueDomain *val_domain(const RzAbsIntInstance *inst) {
+static const RzAbsIntValueDomain *val_domain(const RzAbsIntInstance *inst) {
 	return inst->config.val_domain;
 }
 
@@ -1599,4 +1599,20 @@ RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, R
 	}
 
 	return true;
+}
+
+extern RZ_IPI RzAbsIntValueDomain rz_absint_value_domain_const;
+
+/**
+ * \brief Get the inquiry-builtin value domain by its id
+ * \return non-null value domain if \p dom is a valid enum member
+ */
+RZ_API RZ_NULLABLE const RzAbsIntValueDomain *rz_absint_builtin_value_domain(RzAbsIntBuiltinValueDomain dom) {
+	// We do not export the domain variables directly because Windows dllexport/dllimport asymmetry
+	// would need extra care for it.
+	switch (dom) {
+	case RZ_ABSINT_VALUE_DOMAIN_CONST:
+		return &rz_absint_value_domain_const;
+	}
+	return NULL;
 }

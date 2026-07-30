@@ -233,7 +233,7 @@ static void eval_unop(RzILOpPureCode code, RZ_NONNULL RZ_INOUT RzAbsIntVal *val)
 	}
 }
 
-RZ_API RzAbsIntValueDomain rz_absint_value_domain_const = {
+RZ_IPI RzAbsIntValueDomain rz_absint_value_domain_const = {
 	.name = "constant",
 	.val_new_top = val_new_top,
 	.val_free = val_free,

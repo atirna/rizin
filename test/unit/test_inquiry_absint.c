@@ -37,7 +37,7 @@ static TestInterp *interp_new(const char *arch, int bits, ut64 baddr, const char
 	interp->io->va = 1;
 	interp->il_cache = rz_il_cache_new(interp->analysis, interp->io, RZ_IL_CACHE_CONFIG_NOP_UNLIFTED);
 	RzAbsIntConfig config = {
-		.val_domain = &rz_absint_value_domain_const,
+		.val_domain = rz_absint_builtin_value_domain(RZ_ABSINT_VALUE_DOMAIN_CONST),
 		.cb_user = interp,
 		.io_read = io_read,
 		.lift_block = lift_block

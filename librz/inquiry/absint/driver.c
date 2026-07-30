@@ -171,7 +171,7 @@ static InterpThread *interp_thread_new(RzAnalysis *analysis, InterpDriver *drive
 		goto err_ctx;
 	}
 	RzAbsIntConfig interp_config = {
-		.val_domain = &rz_absint_value_domain_const,
+		.val_domain = rz_absint_builtin_value_domain(RZ_ABSINT_VALUE_DOMAIN_CONST),
 		.trace_opts = driver->trace_opts,
 		.cb_user = ctx,
 		.io_read = send_io_read,
