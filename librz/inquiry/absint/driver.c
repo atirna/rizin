@@ -229,7 +229,7 @@ static RzAbsIntIOReadResult handle_io_request(const RzAnalysisILContext *il_ctx,
 	// TODO: here only memory should be read that can be assumed to be constant!
 	bool ok = rz_il_loadw_into(mem->base_buf, io_req->ld_data, io_req->addr, io_req->n_bits, io_req->big_endian);
 	RZ_LOG_DEBUG("inquiry: Sent IO read result. Success = %s.\n", rz_str_bool(ok));
-	return ok ? RZ_ABSINT_IO_READ_RESULT_TOP : RZ_ABSINT_IO_READ_RESULT_TOP;
+	return ok ? RZ_ABSINT_IO_READ_RESULT_OK : RZ_ABSINT_IO_READ_RESULT_TOP;
 }
 
 RZ_API bool rz_absint_driver_run(RZ_NONNULL RZ_BORROW RzAbsIntDriverConfig *config) {
