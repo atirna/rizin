@@ -69,6 +69,7 @@ jobs:
       with:
           repository: rizinorg/rizin-testbins
           path: test/bins
+          ref: absint
 
     - name: Run unit tests
       run: muon -C build test

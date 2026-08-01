@@ -83,6 +83,7 @@ jobs:
       with:
           repository: rizinorg/rizin-testbins
           path: test/bins
+          ref: absint
 
     - name: Muon setup
       env:

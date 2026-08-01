@@ -43,7 +43,7 @@ export PKG_CONFIG_PATH=$(pwd)/build/meson-private:${PKG_CONFIG_PATH}
 
 if [ "${RZ_TESTS_DISABLE}" != "1" ] ; then
 	export NOREPORT=1
-	git clone https://github.com/rizinorg/rizin-testbins test/bins
+	git clone -b absint https://github.com/rizinorg/rizin-testbins test/bins
 	# Unit tests
 	VERBOSE=1 RZ_TEST_ARGS=-t1920 ninja -C build test || exit 1
 	# Integration tests

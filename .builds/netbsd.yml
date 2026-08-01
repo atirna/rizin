@@ -10,7 +10,7 @@ environment:
     CC: clang
 sources:
     - https://github.com/rizinorg/rizin
-    - https://github.com/rizinorg/rizin-testbins
+    - https://github.com/rizinorg/rizin-testbins#absint
 hottub_trigger: '^(dev|stable|bsd-.+|dist-.+)$'
 tasks:
     - rzpipe: |

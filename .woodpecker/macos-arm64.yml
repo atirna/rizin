@@ -12,7 +12,7 @@ steps:
     image: /bin/bash
     commands:
       - cd test
-      - git clone --depth=1 https://github.com/rizinorg/rizin-testbins bins
+      - git clone --depth=1 -b absint https://github.com/rizinorg/rizin-testbins bins
   install-rzpipe:
     image: /bin/bash
     commands:
