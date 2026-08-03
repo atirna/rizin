@@ -823,7 +823,7 @@ bool test_absint_comments(void) {
 	mu_end;
 }
 
-bool test_absint_driver(void) {
+bool test_absint_driver(size_t n_threads) {
 	rz_cons_new();
 	RzAnalysis *analysis = rz_analysis_new(NULL);
 	rz_analysis_use(analysis, "arm");
@@ -851,7 +851,8 @@ bool test_absint_driver(void) {
 		.io = io,
 		.entry_points = entry_points,
 		.dimens = RZ_ABSINT_RESULT_DIMEN_XREFS | RZ_ABSINT_RESULT_DIMEN_COMMENTS,
-		.trace_opts = RZ_ABSINT_TRACE_NONE
+		.trace_opts = RZ_ABSINT_TRACE_NONE,
+		.n_threads = n_threads
 	};
 	rz_absint_driver_run(&config);
 	rz_set_u_free(entry_points);
@@ -896,7 +897,8 @@ bool all_tests() {
 	mu_run_test(test_absint_cfg_merge_multiple_consecutive);
 	mu_run_test(test_absint_xrefs);
 	mu_run_test(test_absint_comments);
-	mu_run_test(test_absint_driver);
+	mu_run_test(test_absint_driver, 1);
+	mu_run_test(test_absint_driver, 8);
 	return tests_passed != tests_run;
 }
 

@@ -258,6 +258,7 @@ typedef struct rz_absint_driver_config_t {
 	RZ_NONNULL RzSetU *entry_points;
 	RzAbsIntResultDimen dimens;
 	RzAbsIntTraceOptions trace_opts;
+	size_t n_threads;
 	void *cb_user;
 	char *(*choose_fcn_name)(ut64 addr, void *user);
 } RzAbsIntDriverConfig;

@@ -233,7 +233,7 @@ static RzAbsIntIOReadResult handle_io_request(const RzAnalysisILContext *il_ctx,
 }
 
 RZ_API bool rz_absint_driver_run(RZ_NONNULL RZ_BORROW RzAbsIntDriverConfig *config) {
-	rz_return_val_if_fail(config && config->analysis && config->io && config->entry_points, false);
+	rz_return_val_if_fail(config && config->analysis && config->io && config->entry_points && config->n_threads > 0, false);
 	bool return_code = false;
 	bool breaked = false;
 
@@ -278,14 +278,13 @@ RZ_API bool rz_absint_driver_run(RZ_NONNULL RZ_BORROW RzAbsIntDriverConfig *conf
 	}
 	rz_iterator_free(it);
 
-	size_t n_threads = 1;
-	InterpThread **threads = RZ_NEWS0(InterpThread *, n_threads);
+	InterpThread **threads = RZ_NEWS0(InterpThread *, config->n_threads);
 	if (!threads) {
 		goto err_main_ch;
 	}
 
 	// Initialize and spawn the interpreters.
-	for (size_t i = 0; i < n_threads; ++i) {
+	for (size_t i = 0; i < config->n_threads; ++i) {
 		threads[i] = interp_thread_new(config->analysis, &driver);
 		if (!threads[i]) {
 			goto err_threads;
@@ -366,7 +365,7 @@ err_threads:
 	// Close channels to make interp threads stop.
 	rz_th_queue_close(driver.entry_points_ch);
 	rz_th_ring_buf_close(driver.main_ch);
-	for (size_t i = 0; i < n_threads; i++) {
+	for (size_t i = 0; i < config->n_threads; i++) {
 		interp_thread_free(threads[i]);
 	}
 	free(threads);

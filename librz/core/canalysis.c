@@ -6518,6 +6518,7 @@ static bool cinquiry_absint_run(RzCore *core, RzSetU *entry_points) {
 		.entry_points = entry_points,
 		.dimens = RZ_ABSINT_RESULT_DIMEN_XREFS,
 		.trace_opts = absint_trace_opts(core),
+		.n_threads = rz_config_get_integer(core->config, "inquiry.threads"),
 		.cb_user = core,
 		.choose_fcn_name = choose_function_name_cb
 	};
