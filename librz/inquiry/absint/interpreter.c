@@ -109,9 +109,6 @@ static bool reset_state(RzAbsIntInstance *inst, RZ_BORROW RzAbsIntState *state, 
 	return true;
 }
 
-#define STR_TOP    "⊤"
-#define STR_BOTTOM "⊥"
-
 RZ_API bool rz_absint_state_as_str(RZ_NONNULL RzAbsIntInstance *inst, RZ_NONNULL const RzAbsIntState *state, RZ_NONNULL RZ_OUT RzStrBuf *sb) {
 	rz_return_val_if_fail(state && sb, false);
 
@@ -120,7 +117,7 @@ RZ_API bool rz_absint_state_as_str(RZ_NONNULL RzAbsIntInstance *inst, RZ_NONNULL
 	if (state->pc_state == RZ_ABSINT_PC_CONST) {
 		rz_strbuf_appendf(sb, "0x%" PFMT64x, state->pc);
 	} else {
-		rz_strbuf_append(sb, state->pc_state == RZ_ABSINT_PC_ANY ? STR_TOP : STR_BOTTOM);
+		rz_strbuf_append(sb, state->pc_state == RZ_ABSINT_PC_ANY ? RZ_ABSINT_STR_TOP : RZ_ABSINT_STR_BOTTOM);
 	}
 	rz_strbuf_append(sb, "\n\n");
 
@@ -159,7 +156,7 @@ RZ_API void rz_absint_state_as_str_short(RZ_NONNULL RzAbsIntInstance *inst, RZ_N
 	}
 	rz_iterator_free(it);
 	if (all_top) {
-		rz_strbuf_append(sb, STR_TOP);
+		rz_strbuf_append(sb, RZ_ABSINT_STR_TOP);
 	}
 }
 

@@ -113,7 +113,7 @@ bool val_as_str(RZ_NONNULL const RzAbsIntVal *val, RZ_NONNULL RZ_OUT RzStrBuf *s
 		rz_strbuf_append(sb, s);
 		free(s);
 	} else {
-		rz_strbuf_append(sb, "⊤");
+		rz_strbuf_append(sb, RZ_ABSINT_STR_TOP);
 	}
 	return true;
 }

@@ -13,6 +13,9 @@
 #include <rz_arch.h>
 #include <rz_io.h>
 
+#define RZ_ABSINT_STR_TOP    "⊤"
+#define RZ_ABSINT_STR_BOTTOM "⊥"
+
 typedef enum rz_absint_trace_options_t {
 	RZ_ABSINT_TRACE_NONE = 0,
 	RZ_ABSINT_TRACE_IL_BLOCK = (1 << 0), ///< e inquiry.trace=ilblock; log il blocks as they are lifted
