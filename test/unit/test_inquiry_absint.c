@@ -90,11 +90,11 @@ static ut64 block_end(RzAbsIntBlock *block) {
 	RzAbsIntBlock *blocks[blocks_count] = { 0 }; \
 	mu_assert_eq(do_extract_blocks(res, blocks, blocks_count), blocks_count, "blocks count")
 
-#define ASSERT_BLOCK(i, start, end, is_fallthrough, jump) \
+#define ASSERT_BLOCK(i, start, end, is_fallthru, jump) \
 	do { \
 		mu_assert_eq(block_start(blocks[i]), start, "block " STR(i) " start"); \
 		mu_assert_eq(block_end(blocks[i]), end, "block " STR(i) " end"); \
-		mu_assert_eq(blocks[i]->fallthrough, (is_fallthrough), "fallthrough"); \
+		mu_assert_eq(blocks[i]->is_fallthrough, (is_fallthru), "fallthrough"); \
 		if ((jump) != UT64_MAX) { \
 			mu_assert_eq(rz_vector_len(&blocks[i]->jump_targets), 1, "jump targets count"); \
 			mu_assert_eq(*(ut64 *)rz_vector_index_ptr(&blocks[i]->jump_targets, 0), (jump), "jump"); \
@@ -276,7 +276,7 @@ bool test_absint_block_resolve_bounds_split(bool single_op_existing_block, bool 
 	for (size_t i = 0; i < off_count_expect; i++) {
 		mu_assert_eq(*(ut16 *)rz_vector_index_ptr(&existing_block->insn_offsets, i), 4 + 4 * i, "insn offset");
 	}
-	existing_block->fallthrough = false;
+	existing_block->is_fallthrough = false;
 	ut64 target = 0x12345;
 	rz_vector_push(&existing_block->jump_targets, &target);
 
@@ -308,7 +308,7 @@ bool test_absint_block_resolve_bounds_split(bool single_op_existing_block, bool 
 	if (!single_op_existing_block) {
 		mu_assert_eq(*(ut16 *)rz_vector_index_ptr(&existing_block->insn_offsets, 0), 0x04, "insn offset");
 	}
-	mu_assert_true(existing_block->fallthrough, "existing fallthrough");
+	mu_assert_true(existing_block->is_fallthrough, "existing fallthrough");
 	mu_assert_eq(rz_vector_len(&existing_block->jump_targets), 0, "existing jump targets");
 
 	rz_absint_run_context_fini(&ctx);

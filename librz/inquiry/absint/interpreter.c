@@ -431,7 +431,7 @@ RZ_API void rz_absint_block_resolve_bounds(RzAbsIntRunContext *ctx, RzAbsIntBloc
 		rz_vector_shrink(&preceding->insn_offsets);
 		interp_block_resize(ctx, interp_block, rz_absint_block_get_end(preceding));
 		interp_block_resize(ctx, preceding, block_start - 1);
-		preceding->fallthrough = true;
+		preceding->is_fallthrough = true;
 		rz_vector_fini(&interp_block->jump_targets);
 		memmove(&interp_block->jump_targets, &preceding->jump_targets, sizeof(interp_block->jump_targets));
 		rz_vector_init(&preceding->jump_targets, interp_block->jump_targets.elem_size, interp_block->jump_targets.free, interp_block->jump_targets.free_user);
@@ -1302,7 +1302,7 @@ static EvalResult eval_block(RZ_NONNULL RzAbsIntRunContext *ctx, RZ_NONNULL RzAb
 		bool fallthrough = false;
 		if (astate->pc_state == RZ_ABSINT_PC_CONST && astate->pc == interp_block_end + 1) {
 			fallthrough = true;
-			ctx->block->fallthrough = true;
+			ctx->block->is_fallthrough = true;
 		}
 		rz_absint_run_push(ctx, ctx->astate, fallthrough);
 	}
@@ -1410,7 +1410,7 @@ RZ_API RzAbsIntResultCode rz_absint_run(RzAbsIntInstance *inst, ut64 entry_point
 		RzAbsIntBlock *interp_block;
 		rz_interval_tree_foreach (&ctx.blocks, it, interp_block) {
 			RZ_LOG_INFO("0x%" PFMT64x "%s\n", interp_block->entry_state->pc, interp_block->non_fallthrough_in ? " <-" : "");
-			if (interp_block->fallthrough) {
+			if (interp_block->is_fallthrough) {
 				RZ_LOG_INFO("  -> 0x%" PFMT64x " (fallthrough)\n", rz_absint_block_get_end(interp_block) + 1);
 			}
 			ut64 *it;
@@ -1508,6 +1508,8 @@ RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, R
 	RzAnalysisFunction *func = rz_analysis_create_function(analysis, fcn_name ? fcn_name : rz_strf(name_alt, "inquiry.0x%" PFMT64x, res->entry), res->entry, RZ_ANALYSIS_FCN_TYPE_FCN);
 	if (!func) {
 		// TODO: handle better than skipping everything
+		// rz_analysis_create_function() already prints the more detailed reason if there is any
+		RZ_LOG_ERROR("Could not apply analysis result as function @ 0x%" PFMT64x "\n", res->entry);
 		return false;
 	}
 	RzIntervalTreeIter it;
@@ -1524,7 +1526,7 @@ RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, R
 		// Splits like this happen in the first place because interp blocks only reach until the
 		// first jump. This may be a call however, which just falls through.
 		RzIntervalTreeIter next_it = it;
-		while (block->fallthrough && rz_vector_empty(&block->jump_targets)) {
+		while (block->is_fallthrough && rz_vector_empty(&block->jump_targets)) {
 			rz_rbtree_iter_next(&next_it);
 			RzIntervalNode *next_node = NULL;
 			while (rz_rbtree_iter_has(&next_it)) {
@@ -1551,7 +1553,8 @@ RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, R
 		if (!abb) {
 			// TODO: Handle the case of existing blocks better, e.g. just use the existing block
 			// and optionally update its contents with some new information we have gained.
-			RZ_LOG_ERROR("Failed to create block @ 0x%" PFMT64x "\n", start);
+			RZ_LOG_ERROR("Failed to create block @ 0x%" PFMT64x "%s\n", start,
+				rz_analysis_get_block_at(analysis, start) ? " because there is already a block and handling this is not yet implemented" : "");
 			continue;
 		}
 
@@ -1568,7 +1571,7 @@ RZ_API bool rz_absint_result_apply_to_analysis(RZ_NONNULL RzAbsIntResult *res, R
 		rz_vector_foreach (&block->jump_targets, target) {
 			bb_add_target(abb, *target);
 		}
-		if (block->fallthrough) {
+		if (block->is_fallthrough) {
 			bb_add_target(abb, end_excl);
 		}
 	}

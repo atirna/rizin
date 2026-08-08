@@ -85,7 +85,7 @@ typedef struct rz_absint_block_t {
 	bool added_to_analysis; ///< Only used after interpretation, when adding to analysis. Marks blocks that have been merged with the previous.
 
 	// Out-edges
-	bool fallthrough; ///< if true, there is an edge to the block after the end of this one
+	bool is_fallthrough; ///< if true, there is an edge to the block after the end of this one
 	RzVector /*<ut64>*/ jump_targets; ///< Explicit jump targets, does not contain fallthrough address
 } RzAbsIntBlock;
 

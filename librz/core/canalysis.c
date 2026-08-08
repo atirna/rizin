@@ -6476,15 +6476,13 @@ static void cinquiry_collect_entrypoints_all(RzCore *core, RzSetU *res) {
 	// Entrypoints
 	RzBinObject *bin = rz_bin_cur_object(core->bin);
 	vector = bin ? (RzPVector *)rz_bin_object_get_entries(bin) : NULL;
-	if (vector) {
-		rz_pvector_foreach (vector, it) {
-			entry = *it;
-			if (entry->paddr == UT64_MAX) {
-				continue;
-			}
-			ut64 addr = rz_bin_object_get_vaddr(o, entry->paddr, entry->vaddr);
-			rz_set_u_add(res, addr);
+	rz_pvector_foreach (vector, it) {
+		entry = *it;
+		if (entry->paddr == UT64_MAX) {
+			continue;
 		}
+		ut64 addr = rz_bin_object_get_vaddr(o, entry->paddr, entry->vaddr);
+		rz_set_u_add(res, addr);
 	}
 }
 
